@@ -1,0 +1,2 @@
+docker build . -t ftserverimg
+docker run -it --name ftserver -p 80:80 ftserverimg
