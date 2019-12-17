@@ -1,9 +1,16 @@
 FROM debian:buster
 
-#Updating and installing nginx
-RUN apt-get update && apt-get install -y nginx
+MAINTAINER Peer de Bakker <pde-bakk@student.codam.nl>
 
+RUN apt-get update
+RUN apt-get install -y nginx
 RUN apt-get install -y mariadb-server
-COPY nginx-host-conf /root/
-COPY makeserver.sh makeserver.sh
+RUN apt-get install -y php7.3-fpm php-common php-mysql php-mbstring
+
+RUN mkdir -p /root/mkcert
+COPY srcs/nginx-host-conf /root/
+COPY srcs/makeserver.sh ./
+COPY srcs/localhost.pem /root/mkcert/
+COPY srcs/localhost-key.pem /root/mkcert/
+
 CMD bash makeserver.sh
