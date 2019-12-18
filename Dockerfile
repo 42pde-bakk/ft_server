@@ -18,29 +18,33 @@ RUN echo "Hello Peer" > /var/www/localhost/index.php
 
 # MySQL setup
 RUN		service mysql start; \
-		echo "CREATE DATABASE wordpress;" | mysql -u root; \
-		echo "GRANT ALL PRIVILEGES ON wordpress * TO 'root' @ 'localhost'; | mysql -u root
-RUN		echo "FLUSH PRIVILEGES;" | mysql -u root;
+		mysql -uroot mysql; \
+		mysqladmin password "guest"; \
+		echo "CREATE DATABASE wordpress;" | mysql --user=root;\
+		echo "FLUSH PRIVILEGES;" | mysql --user=root
 
-RUN tar -xzvf srcs/phpMyAdmin.tar.gz
+RUN		chown -R www-data:www-data /var/www/localhost/*
+RUN		chmod -R 755 /var/www/localhost/*
 
 EXPOSE 80
 EXPOSE 443
 
 # Load configs
-RUN mkdir -p /var/www/localhost/wordpress/phpmyadmin
+RUN tar -xzvf srcs/phpMyAdmin.tar.gz
+RUN mkdir -p /var/www/localhost/phpmyadmin
+RUN mkdir -p /var/www/localhost/wordpress
+RUN mv -v phpMyAdmin-4.9.2-english/* /var/www/localhost/phpmyadmin
 RUN cp -f srcs/wordpress.tar.gz /var/www/localhost/
-RUN tar -xzvf /var/www/localhost/wordpress.tar.gz
-RUN cp -f srcs/config.inc.php /var/www/localhost/wordpress/phpmyadmin
-RUN cp -f srcs/wp-config.php /var/www/localhost/wordpress/phpmyadmin
-
-
-#RUN mkdir -p /root/mkcert
-#COPY srcs/wordpress.tar.gz /root/
-#COPY srcs/phpMyAdmin.tar.gz /root/
-#COPY srcs/nginx-host-conf /root/
-#COPY srcs/makeserver.sh ./
-#COPY srcs/localhost.pem /root/mkcert/
-#COPY srcs/localhost-key.pem /root/mkcert/
+RUN cd /var/www/localhost/; \
+	tar -xzvf /var/www/localhost/wordpress.tar.gz
+RUN cp -f srcs/config.inc.php /var/www/localhost/phpmyadmin
+RUN cp -f srcs/wp-config.php /var/www/localhost/wordpress/
 
 CMD sh srcs/makeserver.sh
+
+
+# mysqladmin password "guest"
+# echo "DELETE FROM mysql.user WHERE User='';" | mysql --user=root
+# echo "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');" | mysql --user=root
+
+# echo "DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%';" | mysql --user=root
