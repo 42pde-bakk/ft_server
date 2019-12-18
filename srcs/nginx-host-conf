@@ -9,8 +9,8 @@ server {
 	listen 443 ssl;
 	listen [::]:443 ssl;
 
-	ssl_certificate /root/mkcert/localhost.pem;
-	ssl_certificate_key /root/mkcert/localhost-key.pem;
+	ssl_certificate /srcs/localhost.pem;
+	ssl_certificate_key /srcs/localhost-key.pem;
 
 	root /var/www/localhost;
 
