@@ -1,3 +1,4 @@
-docker build . -t ftserverimg
-docker run -it --rm --name ftserver -p 80:80 -p 443:443 ftserverimg
-docker exec -it ftserver bash
+# Peer
+docker build . -t peer
+docker run -it --rm --name peer -p 80:80 -p 443:443 peer
+docker exec -it peer bash
